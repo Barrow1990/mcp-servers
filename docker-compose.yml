@@ -1,0 +1,149 @@
+services:
+  # --- Custom-built servers (this GitHub org, images built by each repo's own CI) ---
+
+  sonarr-mcp:
+    image: ghcr.io/barrow1990/sonarr-mcp-server:latest
+    container_name: sonarr-mcp
+    env_file:
+      - path: env/sonarr.env
+        required: false
+    environment:
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8931
+    ports:
+      - "8931:8931"
+    restart: unless-stopped
+
+  radarr-mcp:
+    image: ghcr.io/barrow1990/radarr-mcp-server:latest
+    container_name: radarr-mcp
+    env_file:
+      - path: env/radarr.env
+        required: false
+    environment:
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8932
+    ports:
+      - "8932:8932"
+    restart: unless-stopped
+
+  bazarr-mcp:
+    image: ghcr.io/barrow1990/bazarr-mcp-server:latest
+    container_name: bazarr-mcp
+    env_file:
+      - path: env/bazarr.env
+        required: false
+    environment:
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8933
+    ports:
+      - "8933:8933"
+    restart: unless-stopped
+
+  prowlarr-mcp:
+    image: ghcr.io/barrow1990/prowlarr-mcp-server:latest
+    container_name: prowlarr-mcp
+    env_file:
+      - path: env/prowlarr.env
+        required: false
+    environment:
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8934
+    ports:
+      - "8934:8934"
+    restart: unless-stopped
+
+  authentik-mcp:
+    image: ghcr.io/barrow1990/authentik-mcp-server:latest
+    container_name: authentik-mcp
+    env_file:
+      - path: env/authentik.env
+        required: false
+    environment:
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8937
+    ports:
+      - "8937:8937"
+    restart: unless-stopped
+
+  streamystats-mcp:
+    image: ghcr.io/barrow1990/streamystats-mcp-server:latest
+    container_name: streamystats-mcp
+    env_file:
+      - path: env/streamystats.env
+        required: false
+    environment:
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8940
+    ports:
+      - "8940:8940"
+    restart: unless-stopped
+
+  reclaimerr-mcp:
+    image: ghcr.io/barrow1990/reclaimerr-mcp-server:latest
+    container_name: reclaimerr-mcp
+    env_file:
+      - path: env/reclaimerr.env
+        required: false
+    environment:
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8941
+    ports:
+      - "8941:8941"
+    restart: unless-stopped
+
+  # --- Third-party servers (see README for source/maintenance notes on each) ---
+
+  dockhand-mcp:
+    image: ghcr.io/strausmann/mcp-dockhand:latest
+    container_name: dockhand-mcp
+    env_file:
+      - path: env/dockhand.env
+        required: false
+    ports:
+      - "8935:8080"
+    restart: unless-stopped
+
+  jellyfin-mcp:
+    image: ghcr.io/jaredtrent/jellyfin-mcp:latest
+    container_name: jellyfin-mcp
+    env_file:
+      - path: env/jellyfin.env
+        required: false
+    # Upstream's own compose binds 127.0.0.1 only and passes the bind address
+    # and bearer token as CLI args, not env vars (confirmed from their
+    # docker-compose.yml) — overridden here to bind 0.0.0.0 so it's reachable
+    # from other hosts on the LAN, matching every other server in this stack.
+    #
+    # JELLYFIN_HTTP_TOKEN below is a `docker compose` *substitution* variable,
+    # resolved at `docker compose` parse-time from this repo's root-level
+    # `.env` file (see .env.example) — NOT from env/jellyfin.env. `env_file:`
+    # only injects variables into the container's own runtime environment; it
+    # can't feed a `command:` argument, which is resolved before the
+    # container even starts. This is the one place in this whole stack where
+    # that distinction actually matters, because it's the only value used
+    # inside `command:` rather than passed as a plain env var.
+    command: ["--http", "--addr", "0.0.0.0:8080", "--http-token", "${JELLYFIN_HTTP_TOKEN:?set JELLYFIN_HTTP_TOKEN in .env at this repo's root}"]
+    ports:
+      - "8936:8080"
+    restart: unless-stopped
+
+  lubelogger-mcp:
+    image: ghcr.io/hargata/lubelogger_mcp:latest
+    container_name: lubelogger-mcp
+    env_file:
+      - path: env/lubelogger.env
+        required: false
+    ports:
+      - "8938:8080"
+    restart: unless-stopped
+
+  seerr-mcp:
+    image: ghcr.io/jhomen368/overseerr-mcp:latest
+    container_name: seerr-mcp
+    env_file:
+      - path: env/seerr.env
+        required: false
+    ports:
+      - "8939:8085"
+    restart: unless-stopped
