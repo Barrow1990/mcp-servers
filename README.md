@@ -121,7 +121,26 @@ together:
   a Viewer-scoped API key in LubeLogger's own UI (Settings > API keys) and
   put it in your MCP client's connection config instead. Setting
   `LUBELOG_USER`/`LUBELOG_PASS` here turns them into a full-account
-  fallback anyone reaching this port can use for free.
+  fallback anyone reaching this port can use for free. Confirmed against
+  the project's own README, which calls this out as the *recommended*
+  setup ("API Key Auth") — their example, adapted to this stack's port:
+  ```json
+  {
+    "mcpServers": {
+      "lubelogger": {
+        "command": "npx",
+        "args": ["mcp-remote", "http://<docker-host>:8938/api/mcp?apiKey=<your-api-key>"]
+      }
+    }
+  }
+  ```
+  For Claude Code specifically, a direct HTTP connection works without the
+  `mcp-remote` stdio bridge shown above (which is a Claude Desktop-ism —
+  Desktop has no native HTTP transport):
+  ```bash
+  claude mcp add lubelogger --transport http \
+    "http://<docker-host>:8938/api/mcp?apiKey=<your-api-key>"
+  ```
 - **seerr-mcp**: targets `seerr-team/seerr` but the API is unchanged from
   Jellyseerr/Overseerr, so it works against any of the three.
 
