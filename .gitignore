@@ -1,4 +1,0 @@
-.env
-.env.dockhand
-env/*.env
-!env/*.env.example
