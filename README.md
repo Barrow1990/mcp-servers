@@ -111,11 +111,17 @@ together:
   API key is admin-equivalent, so this container is worth taking as
   seriously as `authentik-mcp`.
 - **lubelogger-mcp**: built by LubeLogger's own author, self-described as
-  "experimental" and may "break without prior notice." `.env.example` uses
-  its "Local Auth" mode (full account access); a narrower "Header Auth"
-  mode exists but its exact variable names weren't confirmable — check
-  <https://github.com/hargata/lubelog_mcp/wiki/Header-Auth> if you want that
-  instead.
+  "experimental" and may "break without prior notice." Unlike every other
+  server in this stack, its actual credential isn't a container-side
+  variable at all — confirmed from its source: each request forwards
+  whatever `Authorization`/`x-api-key` header or `?apiKey=` query param the
+  *calling MCP client* sent, falling back to `LUBELOG_USER`/`LUBELOG_PASS`
+  (full account, Basic auth) only if neither is set here and the client
+  supplied nothing. `.env.example` leaves both blank on purpose — generate
+  a Viewer-scoped API key in LubeLogger's own UI (Settings > API keys) and
+  put it in your MCP client's connection config instead. Setting
+  `LUBELOG_USER`/`LUBELOG_PASS` here turns them into a full-account
+  fallback anyone reaching this port can use for free.
 - **seerr-mcp**: targets `seerr-team/seerr` but the API is unchanged from
   Jellyseerr/Overseerr, so it works against any of the three.
 
