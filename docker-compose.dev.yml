@@ -1,0 +1,120 @@
+# DEV stack: the same servers as docker-compose.yml, running the `dev` branch of each
+# repo's image (ghcr.io/barrow1990/<repo>:dev), side by side with production.
+#
+#   - image     :dev instead of :latest. Each repo's CI publishes :dev on every push to its
+#               `dev` branch and never touches :latest; only a merge to main does that.
+#   - ports     the production HOST port with a 1 in front (8931 -> 18931, ...). Container
+#               ports are unchanged.
+#   - names     `<service>-dev`, so both stacks can run on one host.
+#   - env       identical variable names, so the dev stack takes its own copy of the values
+#               (a separate Dockhand stack, or its own .env). No secrets live in this file.
+#
+# Only the servers built from this GitHub account's own repos are here. The third-party
+# servers in docker-compose.yml (dockhand, jellyfin, lubelogger, seerr) are left out: they
+# have no `dev` branch of their own to run. Add them if that changes.
+#
+# CAUTION: dev servers talk to the SAME Sonarr/Radarr/Bazarr/etc. as production with
+# whatever credentials you give them, so a dev server's write tools act on your real apps.
+#
+# Dockhand: a git stack on this repo, compose path docker-compose.dev.yml, its own env.
+# (Plain compose: `docker compose -f docker-compose.dev.yml up -d`.)
+
+services:
+  sonarr-mcp:
+    image: ghcr.io/barrow1990/sonarr-mcp-server:dev
+    pull_policy: always    # :dev is a moving tag
+    container_name: sonarr-mcp-dev
+    environment:
+      SONARR_URL: ${SONARR_URL:?}
+      SONARR_API_KEY: ${SONARR_API_KEY:?}
+      MCP_AUTH_TOKEN: ${SONARR_MCP_AUTH_TOKEN:-}
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8931
+    ports:
+      - "18931:8931"
+    restart: unless-stopped
+
+  radarr-mcp:
+    image: ghcr.io/barrow1990/radarr-mcp-server:dev
+    pull_policy: always    # :dev is a moving tag
+    container_name: radarr-mcp-dev
+    environment:
+      RADARR_URL: ${RADARR_URL:?}
+      RADARR_API_KEY: ${RADARR_API_KEY:?}
+      MCP_AUTH_TOKEN: ${RADARR_MCP_AUTH_TOKEN:-}
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8932
+    ports:
+      - "18932:8932"
+    restart: unless-stopped
+
+  bazarr-mcp:
+    image: ghcr.io/barrow1990/bazarr-mcp-server:dev
+    pull_policy: always    # :dev is a moving tag
+    container_name: bazarr-mcp-dev
+    environment:
+      BAZARR_URL: ${BAZARR_URL:?}
+      BAZARR_API_KEY: ${BAZARR_API_KEY:?}
+      MCP_AUTH_TOKEN: ${BAZARR_MCP_AUTH_TOKEN:-}
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8933
+    ports:
+      - "18933:8933"
+    restart: unless-stopped
+
+  prowlarr-mcp:
+    image: ghcr.io/barrow1990/prowlarr-mcp-server:dev
+    pull_policy: always    # :dev is a moving tag
+    container_name: prowlarr-mcp-dev
+    environment:
+      PROWLARR_URL: ${PROWLARR_URL:?}
+      PROWLARR_API_KEY: ${PROWLARR_API_KEY:?}
+      MCP_AUTH_TOKEN: ${PROWLARR_MCP_AUTH_TOKEN:-}
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8934
+    ports:
+      - "18934:8934"
+    restart: unless-stopped
+
+  authentik-mcp:
+    image: ghcr.io/barrow1990/authentik-mcp-server:dev
+    pull_policy: always    # :dev is a moving tag
+    container_name: authentik-mcp-dev
+    environment:
+      AUTHENTIK_URL: ${AUTHENTIK_URL:?}
+      AUTHENTIK_API_TOKEN: ${AUTHENTIK_API_TOKEN:?}
+      AUTHENTIK_ALLOW_WRITES: ${AUTHENTIK_ALLOW_WRITES:-false}
+      MCP_AUTH_TOKEN: ${AUTHENTIK_MCP_AUTH_TOKEN:-}
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8937
+    ports:
+      - "18937:8937"
+    restart: unless-stopped
+
+  streamystats-mcp:
+    image: ghcr.io/barrow1990/streamystats-mcp-server:dev
+    pull_policy: always    # :dev is a moving tag
+    container_name: streamystats-mcp-dev
+    environment:
+      STREAMYSTATS_URL: ${STREAMYSTATS_URL:?}
+      STREAMYSTATS_JELLYFIN_TOKEN: ${STREAMYSTATS_JELLYFIN_TOKEN:?}
+      MCP_AUTH_TOKEN: ${STREAMYSTATS_MCP_AUTH_TOKEN:-}
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8940
+    ports:
+      - "18940:8940"
+    restart: unless-stopped
+
+  reclaimerr-mcp:
+    image: ghcr.io/barrow1990/reclaimerr-mcp-server:dev
+    pull_policy: always    # :dev is a moving tag
+    container_name: reclaimerr-mcp-dev
+    environment:
+      RECLAIMERR_URL: ${RECLAIMERR_URL:?}
+      RECLAIMERR_API_TOKEN: ${RECLAIMERR_API_TOKEN:?}
+      MCP_AUTH_TOKEN: ${RECLAIMERR_MCP_AUTH_TOKEN:-}
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8941
+    ports:
+      - "18941:8941"
+    restart: unless-stopped

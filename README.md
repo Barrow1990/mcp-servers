@@ -98,6 +98,34 @@ cp .env.example .env   # fill in every service's real values
 docker compose up -d --pull always
 ```
 
+## Dev stack
+
+[`docker-compose.dev.yml`](docker-compose.dev.yml) runs the **`dev` branch** of each
+of your own servers next to production, so you can try changes before they reach
+`main`. Each repo's CI publishes `ghcr.io/barrow1990/<repo>:dev` on every push to its
+`dev` branch, and never touches `:latest`; only a merge to `main` moves `:latest`.
+
+| Server | Prod host port | **Dev host port** | Dev container |
+|---|---|---|---|
+| sonarr-mcp | 8931 | **18931** | sonarr-mcp-dev |
+| radarr-mcp | 8932 | **18932** | radarr-mcp-dev |
+| bazarr-mcp | 8933 | **18933** | bazarr-mcp-dev |
+| prowlarr-mcp | 8934 | **18934** | prowlarr-mcp-dev |
+| authentik-mcp | 8937 | **18937** | authentik-mcp-dev |
+| streamystats-mcp | 8940 | **18940** | streamystats-mcp-dev |
+| reclaimerr-mcp | 8941 | **18941** | reclaimerr-mcp-dev |
+
+The rule is simply "the production host port with a `1` in front"; container ports
+and every variable name are unchanged. In Dockhand, add a second git stack on this
+repo with compose path `docker-compose.dev.yml` and its own env values. The
+third-party servers (dockhand, jellyfin, lubelogger, seerr) are not in the dev stack:
+they have no `dev` branch of their own to run.
+
+Dev servers talk to the **same** Sonarr, Radarr, etc. as production, with whatever
+credentials you give them, so a dev server's write tools act on your real apps. Give
+the dev stack read-only credentials where an app offers them (Authentik already
+defaults to `AUTHENTIK_ALLOW_WRITES=false`).
+
 ## Third-party servers: verify before trusting
 
 Four of these aren't built or tested here — check each project's own
