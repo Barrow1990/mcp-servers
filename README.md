@@ -18,6 +18,7 @@ alternatives.
 | `seerr-mcp` | [jhomen368/overseerr-mcp](https://github.com/jhomen368/overseerr-mcp) (third-party) | 8939 |
 | `streamystats-mcp` | [Barrow1990/streamystats-mcp-server](https://github.com/Barrow1990/streamystats-mcp-server) | 8940 |
 | `reclaimerr-mcp` | [Barrow1990/reclaimerr-mcp-server](https://github.com/Barrow1990/reclaimerr-mcp-server) | 8941 |
+| `tracearr-mcp` | [Barrow1990/tracearr-mcp-server](https://github.com/Barrow1990/tracearr-mcp-server) | 8942 |
 
 This repo carries no source code — Compose config plus one env template,
 pulling pre-built images from each project's own registry.
@@ -180,7 +181,7 @@ together:
 - `authentik-mcp` additionally requires `AUTHENTIK_ALLOW_WRITES=true` *and*
   `confirm=True` on the call itself before its one write tool
   (`set_user_active`) will do anything.
-- If you're not currently using one of these 11 servers, don't run it —
+- If you're not currently using one of these 12 servers, don't run it —
   comment it out of `docker-compose.yml` rather than leaving unused surface
   area up.
 
