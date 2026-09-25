@@ -14,7 +14,7 @@ alternatives.
 | `dockhand-mcp` | [strausmann/mcp-dockhand](https://github.com/strausmann/mcp-dockhand) (third-party) | 8935 |
 | `jellyfin-mcp` | [jaredtrent/jellyfin-mcp](https://github.com/jaredtrent/jellyfin-mcp) (third-party) | 8936 |
 | `authentik-mcp` | [Barrow1990/authentik-mcp-server](https://github.com/Barrow1990/authentik-mcp-server) | 8937 |
-| `lubelogger-mcp` | [hargata/lubelog_mcp](https://github.com/hargata/lubelog_mcp) (third-party, official) | 8938 |
+| `lubelogger-mcp` | [Barrow1990/lubelog_mcp](https://github.com/Barrow1990/lubelog_mcp), a fork of [hargata/lubelog_mcp](https://github.com/hargata/lubelog_mcp) (third-party, official) | 8938 |
 | `seerr-mcp` | [jhomen368/overseerr-mcp](https://github.com/jhomen368/overseerr-mcp) (third-party) | 8939 |
 | `streamystats-mcp` | [Barrow1990/streamystats-mcp-server](https://github.com/Barrow1990/streamystats-mcp-server) | 8940 |
 | `reclaimerr-mcp` | [Barrow1990/reclaimerr-mcp-server](https://github.com/Barrow1990/reclaimerr-mcp-server) | 8941 |
@@ -139,9 +139,13 @@ together:
   (which this compose does) — don't skip `JELLYFIN_HTTP_TOKEN`. A Jellyfin
   API key is admin-equivalent, so this container is worth taking as
   seriously as `authentik-mcp`.
-- **lubelogger-mcp**: built by LubeLogger's own author, self-described as
-  "experimental" and may "break without prior notice." Unlike every other
-  server in this stack, its actual credential isn't a container-side
+- **lubelogger-mcp**: runs [Barrow1990/lubelog_mcp](https://github.com/Barrow1990/lubelog_mcp),
+  a fork of LubeLogger's own author's server adding two read tools upstream
+  doesn't have (`GetOdometerRecords`, `GetReminders` — needed for mileage/service
+  projections); everything else, including auth, is unchanged. Upstream is
+  self-described as "experimental" and may "break without prior notice," which
+  applies here too. Unlike every other server in this stack, its actual credential
+  isn't a container-side
   variable at all — confirmed from its source: each request forwards
   whatever `Authorization`/`x-api-key` header or `?apiKey=` query param the
   *calling MCP client* sent, falling back to `LUBELOG_USER`/`LUBELOG_PASS`

@@ -143,7 +143,11 @@ services:
     restart: unless-stopped
 
   lubelogger-mcp:
-    image: ghcr.io/hargata/lubelogger_mcp:latest
+    # Barrow1990/lubelog_mcp: a fork of hargata/lubelog_mcp (the line below was
+    # ghcr.io/hargata/lubelogger_mcp:latest) adding GetOdometerRecords and
+    # GetReminders — read tools upstream doesn't have, needed for mileage/service
+    # projections. Everything else, including auth, is unchanged from upstream.
+    image: ghcr.io/barrow1990/lubelogger_mcp:latest
     container_name: lubelogger-mcp
     # LUBELOG_USER/LUBELOG_PASS deliberately optional (:-, not :?) and
     # deliberately left blank in .env.example — see the comment there. This
